@@ -8,19 +8,35 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, diceRoller;
+var scores, roundScore, activePlayer, diceRoller, scoreHolder;
 
 scores = [0, 0]
 roundScore = 0;
 activePlayer = 0;
 diceRoller = document.querySelector('.btn-roll')
+scoreHolder = document.querySelector('.btn-hold')
 
 document.getElementById('score-0').textContent = '0'
 document.getElementById('score-1').textContent = '0'
 document.getElementById('current-0').textContent = '0'
 document.getElementById('current-1').textContent = '0'
 
+function nextPlayer() {
+    // Hide Dice
+    document.querySelector('.dice').style.display = "none"
 
+    // Next Player
+    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0
+
+    // resetting game dependacies
+    roundScore = 0
+    document.getElementById('current-0').textContent = '0'
+    document.getElementById('current-1').textContent = '0'
+
+    // Toggling Active class for players
+    document.querySelector('.player-1-panel').classList.toggle('active')
+    document.querySelector('.player-2-panel').classList.toggle('active')
+}
 diceRoller.addEventListener('click', function () {
     // Generate random number
     var randomDIceNUmber = Math.floor(Math.random() * 6) + 1;
@@ -38,19 +54,17 @@ diceRoller.addEventListener('click', function () {
         document.querySelector('#current-' + activePlayer).textContent = roundScore
     }
     else {
-        // Hide Dice
-        Dice.style.display = "none"
-
-        // Next Player
-        activePlayer === 0 ? activePlayer = 1 : activePlayer = 0
-
-        // resetting game dependacies
-        roundScore = 0
-        document.getElementById('current-0').textContent = '0'
-        document.getElementById('current-1').textContent = '0'
-
-        // Toggling Active class for players
-        document.querySelector('.player-1-panel').classList.toggle('active')
-        document.querySelector('.player-2-panel').classList.toggle('active')
+        nextPlayer()
     }
+})
+scoreHolder.addEventListener('click', function () {
+    // Add CURRENT score to GLOBAL score
+    scores[activePlayer] += roundScore
+    document.getElementById('score-' + activePlayer).textContent = scores[activePlayer]
+
+
+    // Update the UI
+    nextPlayer()
+
+    // Check if the player won the game
 })
