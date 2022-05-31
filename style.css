@@ -71,8 +71,8 @@ body {
     display: flex;
 }
 
-.player-1-panel,
-.player-2-panel {
+.player-0-panel,
+.player-1-panel {
     width: 50%;
     height: 600px;
     padding: 100px;
@@ -229,11 +229,7 @@ i {
     transform: translateY(-70%);
 }
 
-.winner {
-    background-color: #f7f7f7;
-}
-
-.winner .player-name {
+.winner{
     font-weight: 300;
     color: #EB4D4D;
 }

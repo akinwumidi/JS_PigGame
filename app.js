@@ -8,41 +8,54 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, diceRoller, scoreHolder;
+var scores, roundScore, currentPLayer, rollButton, holdButton, newGameButton;
+init();
+newGameButton.addEventListener('click', init)
+rollButton.addEventListener('click', rollDice)
+holdButton.addEventListener('click', holdCurrentScore)
 
-scores = [0, 0]
-roundScore = 0;
-activePlayer = 0;
-diceRoller = document.querySelector('.btn-roll')
-scoreHolder = document.querySelector('.btn-hold')
 
-document.getElementById('score-0').textContent = '0'
-document.getElementById('score-1').textContent = '0'
-document.getElementById('current-0').textContent = '0'
-document.getElementById('current-1').textContent = '0'
+function init() {
+    scores = [0, 0]
+    roundScore = 0;
+    currentPLayer = 0;
+    document.getElementById('current-0').textContent = '0'
+    document.getElementById('current-1').textContent = '0'
+    document.getElementById('score-0').textContent = '0'
+    document.getElementById('score-1').textContent = '0'
+    newGameButton = document.querySelector('.btn-new')
+    rollButton = document.querySelector('.btn-roll')
+    holdButton = document.querySelector('.btn-hold')
+    document.getElementById('name-0').textContent = 'Player 1'
+    document.getElementById('name-1').textContent = 'Player 2'
+    document.querySelector('.player-0-panel').classList.remove('active')
+    document.querySelector('.player-1-panel').classList.remove('active')
+    document.getElementById('name-0').classList.remove('winner')
+    document.getElementById('name-1').classList.remove('winner')
+    document.querySelector('.player-0-panel').classList.add('active')
+
+}
+
 
 function nextPlayer() {
     // Hide Dice
     document.querySelector('.dice').style.display = "none"
-
     // Next Player
-    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0
-
-    // resetting game dependacies
+    currentPLayer === 0 ? currentPLayer = 1 : currentPLayer = 0
+    // resetting game environment
     roundScore = 0
     document.getElementById('current-0').textContent = '0'
     document.getElementById('current-1').textContent = '0'
-
     // Toggling Active class for players
+    document.querySelector('.player-0-panel').classList.toggle('active')
     document.querySelector('.player-1-panel').classList.toggle('active')
-    document.querySelector('.player-2-panel').classList.toggle('active')
 }
-diceRoller.addEventListener('click', function () {
+function rollDice() {
     // Generate random number
     var randomDIceNUmber = Math.floor(Math.random() * 6) + 1;
 
     // Display result
-    document.querySelector('#current-' + activePlayer).textContent = randomDIceNUmber
+    document.querySelector('#current-' + currentPLayer).textContent = randomDIceNUmber
     var Dice = document.querySelector('.dice')
     Dice.src = 'imgs/dice-' + randomDIceNUmber + '.png'
     Dice.style.display = "flex"
@@ -51,20 +64,27 @@ diceRoller.addEventListener('click', function () {
     if (randomDIceNUmber !== 1) {
         // Add score
         roundScore += randomDIceNUmber
-        document.querySelector('#current-' + activePlayer).textContent = roundScore
+        document.querySelector('#current-' + currentPLayer).textContent = roundScore
     }
     else {
         nextPlayer()
     }
-})
-scoreHolder.addEventListener('click', function () {
+}
+function holdCurrentScore() {
     // Add CURRENT score to GLOBAL score
-    scores[activePlayer] += roundScore
-    document.getElementById('score-' + activePlayer).textContent = scores[activePlayer]
-
-
-    // Update the UI
-    nextPlayer()
-
+    scores[currentPLayer] += roundScore
+    document.getElementById('score-' + currentPLayer).textContent = scores[currentPLayer]
     // Check if the player won the game
-})
+    if (scores[currentPLayer] >= 100) {
+        document.querySelector('.dice').style.display = "none"
+        document.getElementById('name-' + currentPLayer).textContent = 'Winner!!'
+        document.getElementById('name-' + currentPLayer).classList.toggle('winner')
+        document.querySelector('.player-' + currentPLayer + '-panel').classList.toggle('active')
+        rollButton.removeEventListener('click', rollDice)
+        holdButton.removeEventListener('click', holdCurrentScore)
+    }
+    else {
+        // Update the UI
+        nextPlayer()
+    }
+}
